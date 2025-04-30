@@ -1,0 +1,21 @@
+.topheader {
+    padding-top: 40px;
+    padding-left: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.text{
+    font-size: 24px;
+    align-content: center;
+    padding-right: 30px;
+}
+
+.text2{
+    font-size: 14px;
+    padding-right: 50px;
+    align-content: center;
+    color: rgb(100, 101, 102);
+
+}
