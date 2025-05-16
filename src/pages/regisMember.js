@@ -1,27 +1,33 @@
-import "../pages/regisMember.css"
+import "../pages/regisMember.css";
 import Header from "../components/header";
 import ProfileBody from "../components/bodyprofile";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from "react";
 
-
 export default function PageRegisMember() {
-    const [email, setEmail] = useState("");  // ให้ลูกค้ากรอกเอง
-    const [pass,setPass] = useState("");
+    const [email, setEmail] = useState("");  
+    const [pass, setPass] = useState("");
     const [messageAcc, setMessageAcc] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
 
+    const isValidEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
     const handleRegisACC = async () => {
-        try{
-             // 1. Create users
-             const userResponse = await fetch("https://notify-kifarm-esdqbfc2bycadxav.eastasia-01.azurewebsites.net/register", {
+        if (!isValidEmail(email)) {
+            setError("กรุณากรอกอีเมลให้ถูกต้อง");
+            return;
+        }
+
+        try {
+            const userResponse = await fetch("https://notify-kifarm-esdqbfc2bycadxav.eastasia-01.azurewebsites.net/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: email,        // เพิ่ม email ไปใน body
-                    password: pass,          // รหัส
-                }),
+                body: JSON.stringify({ email, password: pass }),
             });
 
             if (!userResponse.ok) {
@@ -29,35 +35,46 @@ export default function PageRegisMember() {
             }
 
             setMessageAcc("สร้างบัญชีเรียบร้อย!");
-            // Navigate to home page after successful save
+            setError("");
             navigate('/register', { state: { email } });
 
-
-        } catch(error) {
+        } catch (error) {
             console.error(error);
-
+            setError("เกิดข้อผิดพลาดในการสมัครสมาชิก");
         }
     };
 
-    console.log(email);
-    console.log(pass);
-
-
-
-
-    return(
+    return (
         <div>
-            <Header></Header>
+            <Header />
             <div className="mainACC">
-            <div className="mainRegisterAcc">
-                <div className="HeaderRegis">สมัครสมาชิก</div>
-                <div className="textAcc">* Name</div>
-                <input className="textAcc" value={email} onChange={(e) => setEmail(e.target.value)}></input>
-                <div className="textAcc">* Password</div>
-                <input className="textAcc" value={pass} onChange={(e) => setPass(e.target.value)}></input>
-                <button className="BTNregisAcc" onClick={handleRegisACC}>สมัครสมาชิก</button>
-            </div>
+                <div className="mainRegisterAcc">
+                    <div className="HeaderRegis">สมัครสมาชิก</div>
 
+                    <div className="textAcc">* Email</div>
+                    <input
+                        type="email"
+                        className="textAcc"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="example@example.com"
+                        required
+                    />
+
+                    <div className="textAcc">* Password</div>
+                    <input
+                        type="password"
+                        className="textAcc"
+                        value={pass}
+                        onChange={(e) => setPass(e.target.value)}
+                        required
+                    />
+
+                    {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
+                    {messageAcc && <div className="success-message" style={{ color: "green", marginTop: "10px" }}>{messageAcc}</div>}
+
+                    <button className="BTNregisAcc" onClick={handleRegisACC}>สมัครสมาชิก</button>
+                </div>
             </div>
         </div>
     );
