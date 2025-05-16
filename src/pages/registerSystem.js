@@ -10,7 +10,7 @@ export default function PageRegister() {
     const location = useLocation();
     const { email } = location.state || {};  // เอา email มาจาก login page
     const [name, setName] = useState("");
-    const [status, setStatus] = useState("");  // ให้ลูกค้ากรอกเอง
+    const [status, setStatus] = useState("");  // รองรับข้อความหลายบรรทัด
     const [message, setMessage] = useState("");
 
     const handleSave = async () => {
@@ -20,9 +20,9 @@ export default function PageRegister() {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: email,      // ส่ง email ไปด้วย
-                    password: "dummy", // ถ้า backend บังคับส่ง password ใส่อะไรก็ได้ เพราะเราจะเปลี่ยนเฉพาะ status
-                    status: "1"        // fix เป็น 1 หลังบ้าน
+                    email: email,
+                    password: "dummy",
+                    status: "1"
                 }),
             });
 
@@ -35,11 +35,11 @@ export default function PageRegister() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: email,        // เพิ่ม email ไปใน body
-                    name: name,          // ชื่อผู้ใช้
-                    status: status,      // สถานะที่กรอก
-                    comments: null,      // ไม่มี comment ตอนนี้
-                    enduBTN: "0"         // ค่าเริ่มต้นปุ่ม
+                    email: email,
+                    name: name,
+                    status: status.trim(),  // ตัดช่องว่างท้าย
+                    comments: null,
+                    enduBTN: "0"
                 }),
             });
 
@@ -48,7 +48,6 @@ export default function PageRegister() {
             }
 
             setMessage("บันทึกข้อมูลเรียบร้อยแล้ว!");
-            // Navigate to home page after successful save
             navigate('/home', { state: { email } });
         } catch (error) {
             console.error(error);
@@ -63,16 +62,33 @@ export default function PageRegister() {
                 <div className="TextHeader">กรอกข้อมูล เพื่อใช้งานระบบของเรา</div>
                 <div className="bodyRegister">
                     <div>name</div>
-                    <input value={name} onChange={(e) => setName(e.target.value)} />
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="กรอกชื่อของคุณ"
+                    />
 
                     <div>status</div>
-                    <input value={status} onChange={(e) => setStatus(e.target.value)} />
+                    <textarea
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        rows={4}
+                        maxLength={500}
+                        placeholder="เช่น ฉันเป็นเกษตรกรอินทรีย์ 🥬\nเลี้ยงไก่ เลี้ยงวัว 🐔🐄"
+                        style={{ width: "100%", resize: "vertical" }}
+                    />
+                    <div style={{ fontSize: "0.9em", color: "#555" }}>
+                        {status.length}/500 ตัวอักษร
+                    </div>
 
-                    <button onClick={handleSave}>save</button>
+                    <button onClick={handleSave}>บันทึก</button>
 
-                    {message && <p>{message}</p>} {/* แสดงข้อความ success/error */}
+                    {message && <p>{message}</p>}
                 </div>
             </div>
         </div>
     );
 }
+
+
