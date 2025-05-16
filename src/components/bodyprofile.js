@@ -120,7 +120,7 @@ export default function ProfileBody() {
         </div>
 
         <div className="contentprofile">
-          <div className="text1">วันนี้ คุณได้ให้กำลังใจคนอื่นไปแล้ว</div>
+          <div className="text1">วันนี้ มีคนให้กำลังใจคุณ ทั้งหมด :</div>
           <div className="text3">{enduBTN} คน</div>
         </div>
         <div className="buttomprofile">
